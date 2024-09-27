@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student and Faculty Dashboard</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-image: url('pic3.jpg'); /* Replace with your image path */
+      background-size: cover; /* Cover the entire page */
+      background-position: center; /* Center the background image */
+      background-repeat: no-repeat; /* Prevent the background image from repeating */
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-container {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo {
+      max-width: 150px;
+      height: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+      margin-top: 0;
+    }
+
+    .profile-container {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile-container label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .profile-container input[type="text"] {
+      padding: 10px;
+      width: 60%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .profile-container button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .profile-container button:hover {
+      background-color: #45a049;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .dashboard-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .dashboard-card h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2em;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+
+    .dashboard-card p {
+      margin: 10px 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .register-link {
+      color: #4CAF50;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+
+    .attendance-card {
+  max-height: 300px; /* Adjust height as needed */
+  overflow: hidden;
+}
+
+.attendance-container {
+  max-height: 200px; /* Limit the height of the container */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 10px;
+}
+
+.attendance-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-container th, .attendance-container td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.attendance-container th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.attendance-container tr:nth-child(even) {
+  background-color:"";
+
+}
+  </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <div class="logo-container">
+    <img src="pic2.jpg" alt="ERP System Logo" class="logo">
+  </div>
+
+  <h1>Student and Faculty Dashboard</h1>
+
+  <!-- Profile Retrieval Form -->
+  <div class="profile-container">
+    <label for="apaarId">Enter APAAR or Faculty ID:</label>
+    <input type="text" id="apaarId" placeholder="Enter ID">
+    <button type="button" onclick="retrieveProfile()">Retrieve Profile</button>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- Profile Details Card -->
+    <div id="profileDetails" class="dashboard-card">
+      <h2>Profile Details</h2>
+      <!-- Profile content will be injected here -->
+    </div>
+
+    <!-- Faculty Details Card -->
+    <div id="facultyDetails" class="dashboard-card">
+      <h2>Faculty Details</h2>
+      <!-- Faculty content will be injected here -->
+    </div>
+
+    <!-- Attendance Table Card -->
+<div class="dashboard-card attendance-card">
+  <h2>Attendance</h2>
+  <div class="attendance-container">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Coursedesc</th>
+          <th>Section</th>
+          <th>Year</th>
+          <th>Semester</th>
+          <th>Total Conducted</th>
+          <th>Total Attended</th>
+          <th>Total Absent</th>
+          <th>Percentage</th>
+          <th>Attendance Register</th>
+        </tr>
+      </thead>
+      <tbody id="attendanceTableBody">
+        <!-- Attendance rows will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Activities Card -->
+    <div class="dashboard-card">
+      <h2>Extracurricular Activities</h2>
+      <div id="activities"></div>
+    </div>
+
+    <!-- Competitions Card -->
+    <div class="dashboard-card">
+      <h2>Competitions</h2>
+      <div id="competitions"></div>
+    </div>
+
+    <!-- Sports Card -->
+    <div class="dashboard-card">
+      <h2>Sports</h2>
+      <div id="sports"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mock student and faculty data
+  const students = {
+ "3001": {
+      name: "Aparna",
+      email: "aparna@gmail.com",
+      phone: "555-123-7654",
+      gender: "Female",
+        grades: {
+            math: 85,
+            science: 92,
+            history: 76
+        },
+        attendance: [
+        { courseDesc: "CAPSTONE PROJECT - 1", section: "S-32-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 48, totalAttended: 26, totalAbsent: 16, percentage: "55%" },
+        { courseDesc: "SOCIAL WORK", section: "S-1-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 6, totalAttended: 6, totalAbsent: 0, percentage: "100%" }
+      ],
+      facultyDetails:[
+      "ramesh ","cse"
+      ],
+      activities: ["Basketball", "Chess Club", "Music Band"],
+      competitions: ["Music Band Competition - 3rd Place", "Chess Tournament - Participation"],
+      sports: ["Basketball - Point Guard", "Soccer - Defender"]
+    
+    },
+    "3002": {
+        name: "Manisha",
+        email: "manisha@gmail.com",
+      phone: "555-123-4567",
+      gender: "Female",
+        grades: {
+            math: 72,
+            science: 88,
+            history: 90
+        },
+        attendance: [
+        { courseDesc: "CAPSTONE PROJECT - 1", section: "S-32-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 48, totalAttended: 26, totalAbsent: 16, percentage: "55%" },
+        { courseDesc: "SOCIAL WORK", section: "S-1-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 6, totalAttended: 6, totalAbsent: 0, percentage: "100%" }
+      ],
+      facultyDetails:[
+      "suresh ","ece"
+      ],
+      activities: ["Basketball", "Chess Club", "Music Band"],
+      competitions: ["Music Band Competition - 3rd Place", "Chess Tournament - Participation"],
+      sports: ["Basketball - Point Guard", "Soccer - Defender"]
+    },
+    "3003": {
+      name: "Sriram",
+      email: "sriram@gmail.com",
+      phone: "555-123-4567",
+      gender: "Male",
+      grades: {
+        math: 95,
+        science: 89,
+        history: 80
+      },
+      facultyDetails:[
+      "ramesh ","cse"
+      ],
+      attendance: [
+        { courseDesc: "CAPSTONE PROJECT - 1", section: "S-32-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 48, totalAttended: 26, totalAbsent: 16, percentage: "55%" },
+        { courseDesc: "SOCIAL WORK", section: "S-1-MA", year: "2024-2025", semester: "Odd Sem", totalConducted: 6, totalAttended: 6, totalAbsent: 0, percentage: "100%" }
+      ],
+      activities: ["Basketball", "Chess Club", "Music Band"],
+      competitions: ["Music Band Competition - 3rd Place", "Chess Tournament - Participation"],
+      sports: ["Basketball - Point Guard", "Soccer - Defender"]
+    },
+    "3004": {
+    name: "Mary",
+    email: "mary@gmail.com",
+    phone: "123-456-7890",
+    gender: "Female",
+    grades: {
+      math: 85,
+      science: 92,
+      history: 78
+    },
+    facultyDetails:[
+      "ramesh ","cse"
+      ],
+    attendance: [
+      {
+        courseDesc: "Introduction to Programming",
+        section: "S-101-CS",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 24,
+        totalAttended: 22,
+        totalAbsent: 2,
+        percentage: "91.67%"
+      },
+      {
+        courseDesc: "Art History",
+        section: "S-202-AH",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 12,
+        totalAttended: 10,
+        totalAbsent: 2,
+        percentage: "83.33%"
+      }
+    ],
+    
+    activities: ["Debate Club", "Student Government"],
+    competitions: ["Debate Tournament - Finalist"],
+    sports: []
+  },
+  "3005": {
+    name: "Pranay",
+    email: "pranay@gmail.com",
+    phone: "987-654-3210",
+    gender: "Male",
+    grades: {
+      math: 72,
+      science: 80,
+      history: 90
+    },
+    attendance: [
+      {
+        courseDesc: "Calculus",
+        section: "S-303-MA",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 30,
+        totalAttended: 24,
+        totalAbsent: 6,
+        percentage: "80%"
+      },
+      {
+        courseDesc: "English Literature",
+        section: "S-404-EN",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 18,
+        totalAttended: 15,
+        totalAbsent: 3,
+        percentage: "83.33%"
+      }
+    ],
+    activities: ["Soccer Club", "Volunteer Club"],
+    competitions: [],
+    sports: ["Soccer - Midfielder"]
+  },
+  3006: {
+    name: "Srinivas",
+    email: "srinivas@gmail.com",
+    phone: "555-789-0123",
+    gender: "Male",
+    grades: {
+      math: 98,
+      science: 95,
+      history: 87
+    },
+    facultyDetails:[
+      "ramesh ","cse"
+      ],
+    attendance: [
+      {
+        courseDesc: "Physics",
+        section: "S-505-PH",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 36,
+        totalAttended: 35,
+        totalAbsent: 1,
+        percentage: "97.22%"
+      },
+      {
+        courseDesc: "World History",
+        section: "S-606-WH",
+        year: "2024-2025",
+        semester: "Odd Sem",
+        totalConducted: 20,
+        totalAttended: 18,
+        totalAbsent: 2,
+        percentage: "90%"
+      }
+    ],
+    activities: ["Math Olympiad Club", "Drama Club"],
+    competitions: ["Math Olympiad - Regional Winner"],
+    sports: []
+  },
+  "3007": {
+    name:"Harsha",
+    email: "harsha@gmail.com",
+  phone: "456-789-0123",
+  gender: "Male",
+  grades: {
+    math: 88,
+    science: 90,
+    history: 85
+  },
+  facultyDetails:[
+      "ramesh ","cse"
+      ],
+  attendance: [
+    {
+      courseDesc: "Biology",
+      section: "S-707-BI",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducte: 28,
+      totalAttended: 26,
+      totalAbsent: 2,
+      percentage: "92.86%"
+    },
+    {
+      courseDesc: "Psychology",
+      section: "S-808-PS",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 16,
+      totalAttended: 14,
+      totalAbsent: 2,
+      percentage: "87.5%"
+    }
+  ],
+  activities: ["Robotics Club", "Art Club"],
+  competitions: ["Robotics Competition - Honorable Mention"],
+  sports: ["Basketball - Forward"]
+},
+"3008": {
+  name: "Sudhiksha",
+  email: "sudhiksha@gmail.com",
+  phone: "789-012-3456",
+  gender: "Female",
+  grades: {
+    math: 75,
+    science: 82,
+    history: 92
+  },
+  facultyDetails:[
+      "ramesh ","cse"
+      ],
+  attendance: [
+    {
+      courseDesc: "Chemistry",
+      section: "S-909-CH",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 32,
+      totalAttended: 28,
+      totalAbsent: 4,
+      percentage: "87.5%"
+    },
+    {
+      courseDesc: "Geography",
+      section: "S-1010-GE",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 18,
+      totalAttended: 16,
+      totalAbsent: 2,
+      percentage: "88.89%"
+    }
+  ],
+  activities: ["Music Club", "Book Club"],
+  competitions: ["Music Band Competition - Honorable Mention"],
+  sports: ["Volleyball - Setter"]
+},
+"3009": {
+    name: "Sravya",
+  email: "sravya@gmail.com",
+  phone: "012-345-6789",
+  gender: "Female",
+  grades: {
+    math: 92,
+    science: 95,
+    history: 88
+  },
+  facultyDetails:[
+      "ramesh ","cse"
+      ],
+  attendance: [
+    {
+      courseDesc: "Computer Science",
+      section: "S-1111-CS",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 34,
+      totalAttended: 32,
+      totalAbsent: 2,
+      percentage: "94.12%"
+    },
+    {
+      courseDesc: "Economics",
+      section: "S-1212-EC",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 22,
+      totalAttended: 20,
+      totalAbsent: 2,
+      percentage: "90.91%"
+    }
+  ],
+  activities: "Robotics Club",
+  competitions: "Robotics Competition - 1st Place",
+  sports: "Basketball - Center"
+},
+"30010": {
+    name: "Mouni",
+  email: "mouni@gmail.com",
+  phone: "345-678-9012",
+  gender: "Female",
+  grades: {
+    math: 80,
+    science: 85,
+    history: 90
+  },
+  facultyDetails:[
+      "ramesh ","cse"
+      ],
+  attendance: [
+    {
+      courseDesc: "Marketing",
+      section: "S-1313-MA",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 26,
+      totalAttended: 24,
+      totalAbsent: 2,
+      percentage: "92.31%"
+    },
+    {
+      courseDesc: "Sociology",
+      section: "S-1414-SO",
+      year: "2024-2025",
+      semester: "Odd Sem",
+      totalConducted: 14,
+      totalAttended: 12,
+      totalAbsent: 2,
+      percentage: "85.71%"
+    }
+  ],
+  activities: "Debate Club",
+  competitions: "Debate Tournament - Semi-Finalist",
+  sports: "Soccer - Forward"
+}};
+
+  // Function to retrieve profile based on ID
+ 
+  // Ensure every student participates in a default competition
+const competitionName = "Annual College Fest - Participation";
+
+// Loop through all students and add the competition if it's not already present
+Object.keys(students).forEach(studentId => {
+  const student = students[studentId];
+  
+  // Check if the student is already participating in the competition
+  if (!student.competitions.includes(competitionName)) {
+    student.competitions.push(competitionName);
+  }
+});
+
+// Function to retrieve profile based on ID
+function retrieveProfile() {
+  const apaarId = document.getElementById('apaarId').value.trim();  // Get the user input
+  const profileDetails = document.getElementById('profileDetails');  // Reference to profile details div
+  const facultyDetails = document.getElementById('facultyDetails');  // Reference to faculty details div
+  const attendanceTableBody = document.getElementById('attendanceTableBody');  // Reference to attendance table body
+  const activities = document.getElementById('activities');  // Reference to activities section
+  const competitions = document.getElementById('competitions');  // Reference to competitions section
+  const sports = document.getElementById('sports');  // Reference to sports section
+
+  // Clear previous data
+  profileDetails.innerHTML = "";
+  facultyDetails.innerHTML = "";
+  attendanceTableBody.innerHTML = "";
+  activities.innerHTML = "";
+  competitions.innerHTML = "";
+  sports.innerHTML = "";
+
+  // Check if student exists in the data
+  if (students[apaarId]) {
+    const student = students[apaarId];
+
+    // Display student profile details
+    profileDetails.innerHTML = `
+      <strong>Name:</strong> ${student.name}<br>
+      <strong>Email:</strong> ${student.email}<br>
+      <strong>Phone Number:</strong> ${student.phone}<br>
+      <strong>Gender:</strong> ${student.gender}
+    `;
+     
+    // Display attendance information in the table
+    student.attendance.forEach((course, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${course.courseDesc}</td>
+        <td>${course.section}</td>
+        <td>${course.year}</td>
+        <td>${course.semester}</td>
+        <td>${course.totalConducted}</td>
+        <td>${course.totalAttended}</td>
+        <td>${course.totalAbsent}</td>
+        <td>${course.percentage}</td>
+        <td><span class="register-link">Register</span></td>
+      `;
+      attendanceTableBody.appendChild(row);
+    });
+   
+   
+    activities.innerHTML = student.activities.join(", ");
+
+    // Display competitions
+    competitions.innerHTML = student.competitions.join(", ");
+
+    // Display sports
+    sports.innerHTML = student.sports.join(", ");
+   
+    facultyDetails.innerHTML = student.facultyDetails.join(",");`
+   
+      
+    `
+  } else if (students[apaarId]) {
+    // If the input matches a faculty ID, display faculty details
+    const facultyMember = students[apaarId];
+
+    facultyDetails.innerHTML = `
+      <strong>Name:</strong> ${facultyMember.name}<br>
+      <strong>Email:</strong> ${facultyMember.email}<br>
+      <strong>Phone Number:</strong> ${facultyMember.phone}<br>
+      <strong>Gender:</strong> ${facultyMember.gender}<br>
+      <strong>Department:</strong> ${facultyMember.department}<br>
+      <strong>Courses:</strong> ${facultyMember.courses.join(", ")}
+    `;
+
+  } else {
+    // Display if no student or faculty is found
+    profileDetails.innerHTML = "No student or faculty found with this ID.";
+  }
+}
+
+</script>
+
+</body>
+</html>
